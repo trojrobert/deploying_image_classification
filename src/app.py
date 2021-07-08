@@ -32,5 +32,4 @@ def run():
             st.write(prediction_classes)
 
 if __name__ == '__main__':
-    
     run()
