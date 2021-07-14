@@ -4,7 +4,6 @@ import streamlit as st
 import pandas as pd
 import  numpy as np
 
-import cv2
 from PIL import Image
 from torchvision import models
 
