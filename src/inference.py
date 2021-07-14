@@ -24,10 +24,10 @@ def run_inference(model, processed_image, top_predictions = 10):
 def get_prediction_class(predictions, imagenet_classes):
     
     probabilities, pred_indices = predictions
-    print(f'probabilities {probabilities[0]}')
-    print(f'pred_indices {pred_indices[0]}')
-    print(f'{len(probabilities[0])}')
-    prediction_classes = [f"{imagenet_classes[pred_indices[0][j]]} with probability {probabilities[0][j]}%" \
+    # print(f'probabilities {probabilities[0]}')
+    # print(f'pred_indices {pred_indices[0]}')
+    # print(f'{len(probabilities[0])}')
+    prediction_classes = [f"{imagenet_classes[pred_indices[0][j]][0]} ({100 * probabilities[0][j]:.2f}%)" \
                 for j in range(len(probabilities[0]))]
     
     return prediction_classes
