@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 import pandas as pd
 import  numpy as np
@@ -16,7 +18,7 @@ def run():
 
     image_file  = st.file_uploader("Upload an image")
 
-    imagenet_classes = read_imagenet_classnames("./data/imagenet_classnames.txt")
+    imagenet_classes = read_imagenet_classnames(f"{os.getcwd()}/data/imagenet_classnames.txt")
 
 
     if image_file:
