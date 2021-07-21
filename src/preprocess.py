@@ -11,7 +11,7 @@ transformations = transforms.Compose([
     
 ])
 
-def preprocessing_image(image):
+def preprocess_image(image):
     """process the image
 
     Args:

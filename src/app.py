@@ -7,7 +7,7 @@ import  numpy as np
 from PIL import Image
 from torchvision import models
 
-from preprocess import  preprocessing_image
+from preprocess import  preprocess_image
 from inference import  run_inference, get_prediction_class
 from utils import read_imagenet_classnames
 
@@ -22,7 +22,7 @@ def run():
 
     image_file  = st.file_uploader("Upload an image")
 
-    imagenet_classes = read_imagenet_classnames(f"{os.getcwd()}/src/data/imagenet_classnames.txt")
+    imagenet_classes = read_imagenet_classnames(f"{os.getcwd()}/data/imagenet_classnames.txt")
 
 
     if image_file:
@@ -34,7 +34,7 @@ def run():
         
         
         if pred_button:
-            processed_img = preprocessing_image(image)
+            processed_img = preprocess_image(image)
             predictions = run_inference(model, processed_img)
             
             prediction_classes = get_prediction_class(predictions, imagenet_classes)
