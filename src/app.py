@@ -22,7 +22,7 @@ def run():
 
     image_file  = st.file_uploader("Upload an image")
 
-    imagenet_classes = read_imagenet_classnames(f"{os.getcwd()}/data/imagenet_classnames.txt")
+    imagenet_classes = read_imagenet_classnames(f"{os.getcwd()}/src/data/imagenet_classnames.txt")
 
 
     if image_file:
