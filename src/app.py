@@ -18,11 +18,11 @@ def run():
     
     model = models.resnet18(pretrained=True)
     st.title("Predict objects in an image")
-    st.write("Predict objects in an image, but works best when only one object is in the image")
+    st.write("This application knows the objects in an image , but works best when only one object is in the image")
 
     image_file  = st.file_uploader("Upload an image")
 
-    imagenet_classes = read_imagenet_classnames(f"{os.getcwd()}/src/data/imagenet_classnames.txt")
+    imagenet_classes = read_imagenet_classnames(f"{os.getcwd()}/data/imagenet_classnames.txt")
 
 
     if image_file:
