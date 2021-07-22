@@ -2,7 +2,7 @@ FROM python:3.8
 
 COPY . /app
 
-WORKDIR /app/src
+WORKDIR /app/
 
 RUN pip install -r ../requirements.txt
 
@@ -11,4 +11,4 @@ RUN pip install -r ../requirements.txt
 
 #Running the streamlit app
 ENTRYPOINT ["streamlit", "run", "--server.maxUploadSize=5", "--server.headless=true" ]
-CMD ["app.py"]
+CMD ["src/app.py"]
