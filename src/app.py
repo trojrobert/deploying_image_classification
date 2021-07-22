@@ -14,7 +14,7 @@ from utils import read_imagenet_classnames
 IMAGE_DISPLAY_SIZE = (330, 330)
 
 
-@st.cache(suppress_st_warning=True)
+
 def run():
     
     model = models.resnet18(pretrained=True)
