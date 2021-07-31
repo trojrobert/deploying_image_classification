@@ -9,12 +9,20 @@ from torchvision import models, transforms
 def get_prediction(image, model, imagenet_class_index):
     tensor = transform_image(image=image)
     outputs = model.forward(tensor)
-    y_result, y_hat = outputs.max(1)
+    _, y_hat = outputs.max(1)
     predicted_idx = str(y_hat.item())
     return imagenet_class_index[predicted_idx][1]
 
 
 def transform_image(image):
+    """ Transform image to fit model
+
+    Args:
+        image (image): Input image from the user
+
+    Returns:
+        tensor: transformed image 
+    """
     transformation = transforms.Compose([transforms.Resize(255),
                                         transforms.CenterCrop(224),
                                         transforms.ToTensor(),
@@ -23,8 +31,9 @@ def transform_image(image):
                                             [0.229, 0.224, 0.225])])
     return transformation(image).unsqueeze(0)
 
+
 @st.cache
-def load_model_info():
+def load_model():
     # Make sure to pass `pretrained` as `True` to use the pretrained weights:
     model = models.resnet18(pretrained=True)
     # Since we are using our model only for inference, switch to `eval` mode:
@@ -34,13 +43,14 @@ def load_model_info():
     
     return model, imagenet_class_index
 
+
 def main():
     
     st.title("Predict objects in an image")
     st.write("This application knows the objects in an image , but works best when only one object is in the image")
 
     
-    model, imagenet_class_index = load_model_info()
+    model, imagenet_class_index = load_model()
     
     image_file  = st.file_uploader("Upload an image", type=['jpg', 'jpeg', 'png'])
 
