@@ -1,4 +1,3 @@
-import os
 import json
 
 import streamlit as st
@@ -39,7 +38,7 @@ def load_model():
     # Since we are using our model only for inference, switch to `eval` mode:
     model.eval()
 
-    imagenet_class_index = json.load(open(f"{os.getcwd()}/data/imagenet_class_index.json"))
+    imagenet_class_index = json.load(open("./data/imagenet_class_index.json"))
     
     return model, imagenet_class_index
 
