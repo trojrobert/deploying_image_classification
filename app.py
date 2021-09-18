@@ -1,17 +1,21 @@
-import os
-import json
+import requests
 
-import streamlit as st
+import gradio as gr
 
 from PIL import Image
+import torch
 from torchvision import models, transforms 
 
-def get_prediction(image, model, imagenet_class_index):
-    tensor = transform_image(image=image)
+def get_prediction(input_image, model, labels):
+    tensor = transform_image(image=input_image)
     outputs = model.forward(tensor)
     _, y_hat = outputs.max(1)
-    predicted_idx = str(y_hat.item())
-    return imagenet_class_index[predicted_idx][1]
+    y_hat = y_hat.numpy()
+
+    with torch.no_grad():
+        prediction = torch.nn.functional.softmax(model(tensor)[0], dim=0)
+    
+    return labels[y_hat[0]]
 
 
 def transform_image(image):
@@ -23,7 +27,8 @@ def transform_image(image):
     Returns:
         tensor: transformed image 
     """
-    transformation = transforms.Compose([transforms.Resize(255),
+    transformation = transforms.Compose([transforms.ToPILImage(),
+                                        transforms.Resize(255),
                                         transforms.CenterCrop(224),
                                         transforms.ToTensor(),
                                         transforms.Normalize(
@@ -32,42 +37,37 @@ def transform_image(image):
     return transformation(image).unsqueeze(0)
 
 
-@st.cache
-def load_model():
+def load_model_and_labels():
     # Make sure to pass `pretrained` as `True` to use the pretrained weights:
-    model = models.resnet18(pretrained=True)
     # Since we are using our model only for inference, switch to `eval` mode:
-    model.eval()
+    model = models.resnet18(pretrained=True).eval()
 
-    imagenet_class_index = json.load(open(f"{os.getcwd()}/data/imagenet_class_index.json"))
+    # Download human-readable labels for ImageNet.
+    response = requests.get("https://git.io/JJkYN")
+    labels = response.text.split("\n")
+   
+    return model, labels
+
+
+def main(input_image):
     
-    return model, imagenet_class_index
+    model, labels = load_model_and_labels()
+    #image = image.reshape(1, -1)
 
+    prediction = get_prediction(input_image, model, labels)
+    return prediction
 
-def main():
-    
-    st.title("Predict objects in an image")
-    st.write("This application knows the objects in an image , but works best when only one object is in the image")
+iface = gr.Interface(
+    fn=main,
+    inputs=gr.inputs.Image(shape=(224, 224)),
+    outputs=gr.outputs.Label(num_top_classes=3),
+    title="Predict objects in an image",
+    description="This application can predict objects in an image , but works best when only one object is in the image",
+    live=True,
+    interpretation="default",
+    capture_session=True
+)
 
-    
-    model, imagenet_class_index = load_model()
-    
-    image_file  = st.file_uploader("Upload an image", type=['jpg', 'jpeg', 'png'])
-
-    if image_file:
-       
-        left_column, right_column = st.beta_columns(2)
-        left_column.image(image_file, caption="Uploaded image", use_column_width=True)
-        image = Image.open(image_file)
-
-        pred_button = st.button("Predict")
-        
-        
-        if pred_button:
-
-            prediction = get_prediction(image, model, imagenet_class_index)
-            right_column.title("Prediction")
-            right_column.write(prediction)
 
 if __name__ == '__main__':
-    main()
+    iface.launch(share=True)
