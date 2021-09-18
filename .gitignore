@@ -1,4 +1,5 @@
 .vscode/
 __pycache__/
-gradio_env/
-flagged/
+gradio_image_classification/flagged
+gradio_image_classification/gradio_img_cls
+streamlit_image_classification/streamlit_img_cls
